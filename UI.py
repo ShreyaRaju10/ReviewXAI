@@ -62,7 +62,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 
 def main():
     st.title("📈 ReviewXAI")
-    st.markdown('''<p style='font-size: 22px;'>Analyze customer reviews and feedback with AI-powered sentiment and topic analysis</p>''',
+    st.markdown('''<p style='font-size: 22px;'> Analyse customer reviews and feedback with AI-powered sentiment and topic analyser</p>''',
     unsafe_allow_html=True)
     
     st.sidebar.header("⚙️ Options")
