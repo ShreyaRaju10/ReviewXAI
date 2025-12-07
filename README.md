@@ -67,4 +67,10 @@ This project is labelled XAI (Explainable AI) because it moves beyond "Black Box
 4. Click Analyze All Reviews to generate the dashboard report.
 
 ## App Interface
-![1](1.jpeg)
+![](1.jpg)
+![](2.jpg)
+![](3.jpg)
+![](4.jpg)
+![](5.jpg)
+![](6.jpg)
+![](7.jpg)
