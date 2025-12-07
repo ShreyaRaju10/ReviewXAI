@@ -66,3 +66,5 @@ This project is labelled XAI (Explainable AI) because it moves beyond "Black Box
 3. Select the column that contains the text reviews.
 4. Click Analyze All Reviews to generate the dashboard report.
 
+## App Interface
+![1](1.jpeg)
