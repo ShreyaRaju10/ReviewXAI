@@ -73,12 +73,12 @@ def main():
     
     # Single Review Mode
     if analysis_mode == "Single Tweet":
-        st.header("🔍 Single Review Analysis")
+        st.header("🔍 Single Tweet Analysis")
         
         user_input = st.text_area(
-            "Enter your review or feedback:",
+            "Enter the Tweet you want to analyse :",
             height=150,
-            placeholder="Type or paste your review here..."
+            placeholder="Type or paste your tweet here..."
         )
         
         if st.button("Analyze", type="primary"):
@@ -132,12 +132,12 @@ def main():
             st.write("")
             st.write("")
             text_column = st.selectbox(
-                "Select the column containing reviews:",
+                "Select the column containing tweets:",
                 df.columns
             )
             st.write("")  
             st.write("")  
-            if st.button("Analyze All Reviews", type="primary"):
+            if st.button("Analyze All Tweets", type="primary"):
                 with st.spinner("Processing..."):
                     sentiments = []
                     polarities = []
@@ -197,7 +197,7 @@ def main():
     st.sidebar.info(
         """
         **How to use:**
-        1. Choose Single Review or Batch Analysis
+        1. Choose Single Tweet or Batch Analysis
         2. Enter text or upload CSV file
         3. Click Analyze
 
