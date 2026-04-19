@@ -61,18 +61,18 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 def main():
-    st.title("📈 ReviewXAI")
+    st.title("📈 TweetXAI")
     st.markdown('''<p style='font-size: 22px;'> Classify tweets using AI-powered sentiment analysis to identify positive, negative and neutral opinions</p>''',
     unsafe_allow_html=True)
     
     st.sidebar.header("⚙️ Options")
     analysis_mode = st.sidebar.radio(
         "Choose Analysis Mode:",
-        ["Single Review", "Batch Analysis (CSV)"]
+        ["Single Tweet", "Batch Analysis (CSV)"]
     )
     
     # Single Review Mode
-    if analysis_mode == "Single Review":
+    if analysis_mode == "Single Tweet":
         st.header("🔍 Single Review Analysis")
         
         user_input = st.text_area(
