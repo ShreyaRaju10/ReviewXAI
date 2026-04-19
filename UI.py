@@ -184,17 +184,7 @@ def main():
                         st.plotly_chart(fig_hist, use_container_width=True)
                     
                     #word cloud
-                    '''
-                    st.subheader("☁️ Word Cloud")
-                    all_text = ' '.join(df[text_column].dropna().astype(str))
-                    wordcloud = generate_wordcloud(all_text)
-                
-                    fig, ax = plt.subplots(figsize=(10, 5))
-                    ax.imshow(wordcloud, interpolation='bilinear')
-                    ax.axis('off')
-                    st.pyplot(fig)
-                    '''
-    
+                    
     st.sidebar.markdown("---")
     st.sidebar.info(
         """
