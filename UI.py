@@ -61,24 +61,24 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)
 
 def main():
-    st.title("📈 TweetXAI")
-    st.markdown('''<p style='font-size: 22px;'> Classify tweets using AI-powered sentiment analysis to identify positive, negative and neutral opinions</p>''',
+    st.title("📈 ReviewXAI")
+    st.markdown('''<p style='font-size: 22px;'> Classify Reviews using AI-powered sentiment analysis to identify positive, negative and neutral opinions</p>''',
     unsafe_allow_html=True)
     
     st.sidebar.header("⚙️ Options")
     analysis_mode = st.sidebar.radio(
         "Choose Analysis Mode:",
-        ["Single Tweet", "Batch Analysis (CSV)"]
+        ["Single Review", "Batch Analysis (CSV)"]
     )
     
     # Single Review Mode
-    if analysis_mode == "Single Tweet":
-        st.header("🔍 Single Tweet Analysis")
+    if analysis_mode == "Single Review":
+        st.header("🔍 Single Review Analysis")
         
         user_input = st.text_area(
-            "Enter the Tweet you want to analyse :",
+            "Enter the Review you want to analyse :",
             height=150,
-            placeholder="Type or paste your tweet here..."
+            placeholder="Type or paste your review here..."
         )
         
         if st.button("Analyze", type="primary"):
@@ -137,7 +137,7 @@ def main():
             )
             st.write("")  
             st.write("")  
-            if st.button("Analyze All Tweets", type="primary"):
+            if st.button("Analyze All Reviews", type="primary"):
                 with st.spinner("Processing..."):
                     sentiments = []
                     polarities = []
@@ -189,7 +189,7 @@ def main():
     st.sidebar.info(
         """
         **How to use:**
-        1. Choose Single Tweet or Batch Analysis
+        1. Choose Single Review or Batch Analysis
         2. Enter text or upload CSV file
         3. Click Analyze
 
