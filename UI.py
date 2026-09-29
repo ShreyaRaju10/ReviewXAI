@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
+import io
 
 # Import functions
 from model import (
@@ -12,26 +13,42 @@ from model import (
     generate_wordcloud,
 )
 
-# Page Config
+# ==========================================================
+# PAGE CONFIG
+# ==========================================================
+
 st.set_page_config(
     page_title="Sentiment & Topic Classifier",
     page_icon="📊",
     layout="wide"
 )
 
-# CSS Code
+# ==========================================================
+# CSS CODE
+# ==========================================================
+
 custom_css = """
 <style>
 
 /* Main page background */
 [data-testid="stAppViewContainer"] {
-    background: linear-gradient(135deg, #001419, #003B46, #005F73) !important;
+    background: linear-gradient(
+        135deg,
+        #001419,
+        #003B46,
+        #005F73
+    ) !important;
+
     background-attachment: fixed;
 }
 
 /* Sidebar */
 [data-testid="stSidebar"] {
-    background: linear-gradient(135deg, #001419, #00323D) !important;
+    background: linear-gradient(
+        135deg,
+        #001419,
+        #00323D
+    ) !important;
 }
 
 /* Text */
@@ -41,52 +58,83 @@ custom_css = """
 
 /* Button */
 .stButton > button {
-    background: linear-gradient(90deg, #007F8C, #00C6A2) !important;
+    background: linear-gradient(
+        90deg,
+        #007F8C,
+        #00C6A2
+    ) !important;
+
     color: white !important;
     border: none !important;
+
     padding: 0.6rem 1.2rem !important;
+
     font-weight: 600 !important;
+
     border-radius: 10px !important;
+
     transition: 0.3s !important;
 }
 
 /* Hover */
 .stButton > button:hover {
-    background: linear-gradient(90deg, #00C6A2, #007F8C) !important;
+    background: linear-gradient(
+        90deg,
+        #00C6A2,
+        #007F8C
+    ) !important;
+
     transform: scale(1.02);
 }
 
 </style>
 """
 
-st.markdown(custom_css, unsafe_allow_html=True)
+st.markdown(
+    custom_css,
+    unsafe_allow_html=True
+)
 
+
+# ==========================================================
+# MAIN FUNCTION
+# ==========================================================
 
 def main():
+
+    # ======================================================
+    # TITLE
+    # ======================================================
 
     st.title("📈 ReviewXAI")
 
     st.markdown(
         """
         <p style='font-size: 22px;'>
-        Classify Reviews using AI-powered sentiment analysis to identify
-        positive, negative and neutral opinions
+        Classify Reviews using AI-powered sentiment analysis
+        to identify positive, negative and neutral opinions
         </p>
         """,
         unsafe_allow_html=True
     )
 
-    # Sidebar
+    # ======================================================
+    # SIDEBAR OPTIONS
+    # ======================================================
+
     st.sidebar.header("⚙️ Options")
 
     analysis_mode = st.sidebar.radio(
         "Choose Analysis Mode:",
-        ["Single Review", "Batch Analysis (CSV)"]
+        [
+            "Single Review",
+            "Batch Analysis (CSV)"
+        ]
     )
 
-    # ==========================================================
+    # ======================================================
     # SINGLE REVIEW MODE
-    # ==========================================================
+    # ======================================================
 
     if analysis_mode == "Single Review":
 
@@ -98,30 +146,46 @@ def main():
             placeholder="Type or paste your review here..."
         )
 
-        if st.button("Analyze", type="primary"):
+        # ==================================================
+        # ANALYZE BUTTON
+        # ==================================================
+
+        if st.button(
+            "Analyze",
+            type="primary"
+        ):
 
             if user_input.strip():
 
                 with st.spinner("Analyzing..."):
 
-                    sentiment, polarity, color = analyze_sentiment(user_input)
+                    # Sentiment analysis
+                    sentiment, polarity, color = analyze_sentiment(
+                        user_input
+                    )
 
-                    # Metrics
+                    # ==================================================
+                    # METRICS
+                    # ==================================================
+
                     col1, col2, col3 = st.columns(3)
 
                     with col1:
+
                         st.metric(
                             "Sentiment",
                             sentiment
                         )
 
                     with col2:
+
                         st.metric(
                             "Polarity Score",
                             f"{polarity:.2f}"
                         )
 
                     with col3:
+
                         st.metric(
                             "Confidence",
                             f"{abs(polarity) * 100:.1f}%"
@@ -134,35 +198,46 @@ def main():
                     fig = go.Figure(
                         go.Indicator(
                             mode="gauge+number",
+
                             value=polarity,
+
                             domain={
-                                'x': [0, 1],
-                                'y': [0, 1]
+                                "x": [0, 1],
+                                "y": [0, 1]
                             },
+
                             title={
-                                'text': "Sentiment Polarity"
+                                "text": "Sentiment Polarity"
                             },
+
                             gauge={
-                                'axis': {
-                                    'range': [-1, 1]
+
+                                "axis": {
+                                    "range": [-1, 1]
                                 },
-                                'bar': {
-                                    'color': color
+
+                                "bar": {
+                                    "color": color
                                 },
-                                'steps': [
+
+                                "steps": [
+
                                     {
-                                        'range': [-1, -0.1],
-                                        'color': "#7A3E3E"
+                                        "range": [-1, -0.1],
+                                        "color": "#7A3E3E"
                                     },
+
                                     {
-                                        'range': [-0.1, 0.1],
-                                        'color': "#A7A878"
+                                        "range": [-0.1, 0.1],
+                                        "color": "#A7A878"
                                     },
+
                                     {
-                                        'range': [0.1, 1],
-                                        'color': "#3E6B4A"
+                                        "range": [0.1, 1],
+                                        "color": "#3E6B4A"
                                     }
-                                ],
+
+                                ]
                             }
                         )
                     )
@@ -173,19 +248,29 @@ def main():
                     )
 
                     # ==================================================
-                    # KEYWORDS / TOPICS
+                    # KEY TOPICS
                     # ==================================================
 
-                    st.subheader("🔑 Key Topics/Keywords")
+                    st.subheader(
+                        "🔑 Key Topics/Keywords"
+                    )
 
                     topics = extract_topics(
                         [user_input],
                         n_topics=5
                     )
 
-                    st.write(
-                        ", ".join(topics)
-                    )
+                    if topics:
+
+                        st.write(
+                            ", ".join(topics)
+                        )
+
+                    else:
+
+                        st.info(
+                            "No topics could be extracted."
+                        )
 
             else:
 
@@ -194,66 +279,107 @@ def main():
                 )
 
     # ==========================================================
-    # BATCH ANALYSIS
+    # BATCH ANALYSIS MODE
     # ==========================================================
 
     else:
 
-        st.header("📁 Batch Analysis (CSV Upload)")
+        st.header(
+            "📁 Batch Analysis (CSV Upload)"
+        )
 
         uploaded_file = st.file_uploader(
             "Choose a CSV file",
             type=["csv"]
         )
 
+        # ======================================================
+        # FILE UPLOADED
+        # ======================================================
+
         if uploaded_file is not None:
 
-            # ======================================================
-            # CSV ENCODING FIX
-            # ======================================================
+            # ==================================================
+            # ROBUST CSV READING
+            # ==================================================
 
             try:
 
-                # First try UTF-8
-                df = pd.read_csv(
-                    uploaded_file,
-                    encoding="utf-8"
-                )
+                # Read uploaded file as bytes
+                file_bytes = uploaded_file.getvalue()
 
-            except UnicodeDecodeError:
+                # Possible encodings
+                encodings = [
+                    "utf-8",
+                    "utf-8-sig",
+                    "cp1252",
+                    "latin1",
+                    "ISO-8859-1"
+                ]
 
-                # Reset file position
-                uploaded_file.seek(0)
+                df = None
 
-                try:
+                # ------------------------------------------------
+                # TRY NORMAL CSV PARSER
+                # ------------------------------------------------
 
-                    # Try Windows encoding
-                    df = pd.read_csv(
-                        uploaded_file,
-                        encoding="cp1252"
-                    )
-
-                except UnicodeDecodeError:
-
-                    # Reset file position again
-                    uploaded_file.seek(0)
+                for encoding in encodings:
 
                     try:
 
-                        # Final fallback
                         df = pd.read_csv(
-                            uploaded_file,
-                            encoding="latin1"
+                            io.BytesIO(file_bytes),
+                            encoding=encoding
                         )
 
-                    except Exception as e:
+                        break
 
-                        st.error(
-                            "Unable to read this CSV file. "
-                            "Please save the file as UTF-8 CSV and upload it again."
-                        )
+                    except (
+                        UnicodeDecodeError,
+                        pd.errors.ParserError
+                    ):
 
-                        st.stop()
+                        continue
+
+                # ------------------------------------------------
+                # TRY PYTHON ENGINE
+                # ------------------------------------------------
+
+                if df is None:
+
+                    for encoding in encodings:
+
+                        try:
+
+                            df = pd.read_csv(
+                                io.BytesIO(file_bytes),
+                                encoding=encoding,
+                                engine="python",
+                                on_bad_lines="skip"
+                            )
+
+                            break
+
+                        except Exception:
+
+                            continue
+
+                # ------------------------------------------------
+                # IF FILE STILL CANNOT BE READ
+                # ------------------------------------------------
+
+                if df is None:
+
+                    st.error(
+                        """
+                        Unable to read this CSV file.
+
+                        Please make sure that the uploaded file is
+                        a valid CSV file with properly formatted rows.
+                        """
+                    )
+
+                    st.stop()
 
             except Exception as e:
 
@@ -263,11 +389,25 @@ def main():
 
                 st.stop()
 
-            # ======================================================
-            # PREVIEW DATA
-            # ======================================================
+            # ==================================================
+            # CHECK IF DATAFRAME IS EMPTY
+            # ==================================================
 
-            st.subheader("Preview Data")
+            if df.empty:
+
+                st.error(
+                    "The uploaded CSV file is empty."
+                )
+
+                st.stop()
+
+            # ==================================================
+            # PREVIEW DATA
+            # ==================================================
+
+            st.subheader(
+                "👀 Preview Data"
+            )
 
             st.dataframe(
                 df.head(),
@@ -275,11 +415,39 @@ def main():
             )
 
             st.write("")
+
+            # ==================================================
+            # DATASET INFORMATION
+            # ==================================================
+
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+
+                st.metric(
+                    "Rows",
+                    df.shape[0]
+                )
+
+            with col2:
+
+                st.metric(
+                    "Columns",
+                    df.shape[1]
+                )
+
+            with col3:
+
+                st.metric(
+                    "Missing Values",
+                    int(df.isnull().sum().sum())
+                )
+
             st.write("")
 
-            # ======================================================
-            # COLUMN SELECTION
-            # ======================================================
+            # ==================================================
+            # SELECT TEXT COLUMN
+            # ==================================================
 
             text_column = st.selectbox(
                 "Select the column containing reviews/tweets:",
@@ -287,11 +455,10 @@ def main():
             )
 
             st.write("")
-            st.write("")
 
-            # ======================================================
+            # ==================================================
             # ANALYZE ALL REVIEWS
-            # ======================================================
+            # ==================================================
 
             if st.button(
                 "Analyze All Reviews",
@@ -305,22 +472,39 @@ def main():
                     sentiments = []
                     polarities = []
 
-                    # Process each review
-                    for text in df[text_column]:
+                    # ==================================================
+                    # PROCESS EACH REVIEW
+                    # ==================================================
 
-                        if pd.notna(text):
+                    for text_value in df[text_column]:
 
-                            sentiment, polarity, _ = analyze_sentiment(
-                                str(text)
-                            )
+                        if pd.notna(text_value):
 
-                            sentiments.append(
-                                sentiment
-                            )
+                            try:
 
-                            polarities.append(
-                                polarity
-                            )
+                                sentiment, polarity, _ = (
+                                    analyze_sentiment(
+                                        str(text_value)
+                                    )
+                                )
+
+                                sentiments.append(
+                                    sentiment
+                                )
+
+                                polarities.append(
+                                    polarity
+                                )
+
+                            except Exception:
+
+                                sentiments.append(
+                                    "Unknown"
+                                )
+
+                                polarities.append(
+                                    0
+                                )
 
                         else:
 
@@ -332,35 +516,51 @@ def main():
                                 0
                             )
 
-                    # Add results to dataframe
+                    # ==================================================
+                    # ADD RESULTS TO DATAFRAME
+                    # ==================================================
+
                     df["Sentiment"] = sentiments
+
                     df["Polarity"] = polarities
 
                     # ==================================================
-                    # ANALYSIS RESULTS
+                    # RESULTS
                     # ==================================================
 
                     st.subheader(
                         "📊 Analysis Results"
                     )
 
-                    col1, col2 = st.columns(2)
+                    # ==================================================
+                    # SENTIMENT COUNTS
+                    # ==================================================
+
+                    sentiment_counts = (
+                        df["Sentiment"]
+                        .value_counts()
+                    )
 
                     # ==================================================
-                    # PIE CHART
+                    # CHARTS
                     # ==================================================
+
+                    col1, col2 = st.columns(2)
+
+                    # ------------------------------------------------
+                    # PIE CHART
+                    # ------------------------------------------------
 
                     with col1:
 
-                        sentiment_counts = (
-                            df["Sentiment"]
-                            .value_counts()
-                        )
-
                         fig_pie = px.pie(
+
                             values=sentiment_counts.values,
+
                             names=sentiment_counts.index,
+
                             title="Sentiment Distribution",
+
                             color_discrete_sequence=[
                                 "#A1D99B",
                                 "#2A5470",
@@ -373,17 +573,22 @@ def main():
                             use_container_width=True
                         )
 
-                    # ==================================================
+                    # ------------------------------------------------
                     # HISTOGRAM
-                    # ==================================================
+                    # ------------------------------------------------
 
                     with col2:
 
                         fig_hist = px.histogram(
+
                             df,
+
                             x="Polarity",
+
                             title="Polarity Distribution",
+
                             nbins=30,
+
                             color_discrete_sequence=[
                                 "#00C29A"
                             ]
@@ -392,6 +597,63 @@ def main():
                         st.plotly_chart(
                             fig_hist,
                             use_container_width=True
+                        )
+
+                    # ==================================================
+                    # SENTIMENT SUMMARY
+                    # ==================================================
+
+                    st.subheader(
+                        "📌 Sentiment Summary"
+                    )
+
+                    summary_col1, summary_col2, summary_col3 = (
+                        st.columns(3)
+                    )
+
+                    positive_count = (
+                        df["Sentiment"]
+                        .astype(str)
+                        .str.lower()
+                        .eq("positive")
+                        .sum()
+                    )
+
+                    negative_count = (
+                        df["Sentiment"]
+                        .astype(str)
+                        .str.lower()
+                        .eq("negative")
+                        .sum()
+                    )
+
+                    neutral_count = (
+                        df["Sentiment"]
+                        .astype(str)
+                        .str.lower()
+                        .eq("neutral")
+                        .sum()
+                    )
+
+                    with summary_col1:
+
+                        st.metric(
+                            "😊 Positive",
+                            positive_count
+                        )
+
+                    with summary_col2:
+
+                        st.metric(
+                            "😐 Neutral",
+                            neutral_count
+                        )
+
+                    with summary_col3:
+
+                        st.metric(
+                            "😞 Negative",
+                            negative_count
                         )
 
                     # ==================================================
@@ -404,30 +666,45 @@ def main():
 
                     try:
 
-                        # Combine all text
-                        all_text = " ".join(
+                        # Collect all valid reviews
+                        text_data = (
                             df[text_column]
                             .dropna()
                             .astype(str)
+                            .tolist()
                         )
 
-                        if all_text.strip():
+                        if len(text_data) > 0:
 
-                            wordcloud_image = generate_wordcloud(
-                                all_text
+                            # Combine reviews
+                            all_text = " ".join(
+                                text_data
                             )
 
-                            if wordcloud_image is not None:
+                            # Generate word cloud
+                            wordcloud_result = (
+                                generate_wordcloud(
+                                    all_text
+                                )
+                            )
+
+                            if wordcloud_result is not None:
 
                                 st.image(
-                                    wordcloud_image,
+                                    wordcloud_result,
                                     use_container_width=True
+                                )
+
+                            else:
+
+                                st.info(
+                                    "Word cloud could not be generated."
                                 )
 
                         else:
 
                             st.info(
-                                "Not enough text available to generate a word cloud."
+                                "No text available for word cloud."
                             )
 
                     except Exception as e:
@@ -437,7 +714,7 @@ def main():
                         )
 
                     # ==================================================
-                    # RESULTS TABLE
+                    # CLASSIFIED DATA
                     # ==================================================
 
                     st.subheader(
@@ -453,15 +730,22 @@ def main():
                     # DOWNLOAD RESULTS
                     # ==================================================
 
-                    csv = df.to_csv(
+                    st.subheader(
+                        "⬇️ Download Results"
+                    )
+
+                    result_csv = df.to_csv(
                         index=False,
                         encoding="utf-8"
                     )
 
                     st.download_button(
                         label="⬇️ Download Results CSV",
-                        data=csv,
+
+                        data=result_csv,
+
                         file_name="ReviewXAI_Results.csv",
+
                         mime="text/csv"
                     )
 
@@ -488,9 +772,9 @@ def main():
     )
 
 
-# ==============================================================
+# ==========================================================
 # RUN APPLICATION
-# ==============================================================
+# ==========================================================
 
 if __name__ == "__main__":
     main()
