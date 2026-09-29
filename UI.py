@@ -656,63 +656,7 @@ def main():
                             negative_count
                         )
 
-                    # ==================================================
-                    # WORD CLOUD
-                    # ==================================================
-
-                    st.subheader(
-                        "☁️ Word Cloud"
-                    )
-
-                    try:
-
-                        # Collect all valid reviews
-                        text_data = (
-                            df[text_column]
-                            .dropna()
-                            .astype(str)
-                            .tolist()
-                        )
-
-                        if len(text_data) > 0:
-
-                            # Combine reviews
-                            all_text = " ".join(
-                                text_data
-                            )
-
-                            # Generate word cloud
-                            wordcloud_result = (
-                                generate_wordcloud(
-                                    all_text
-                                )
-                            )
-
-                            if wordcloud_result is not None:
-
-                                st.image(
-                                    wordcloud_result,
-                                    use_container_width=True
-                                )
-
-                            else:
-
-                                st.info(
-                                    "Word cloud could not be generated."
-                                )
-
-                        else:
-
-                            st.info(
-                                "No text available for word cloud."
-                            )
-
-                    except Exception as e:
-
-                        st.warning(
-                            "Word cloud could not be generated."
-                        )
-
+                    
                     # ==================================================
                     # CLASSIFIED DATA
                     # ==================================================
